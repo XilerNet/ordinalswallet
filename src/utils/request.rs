@@ -1,25 +1,11 @@
-use crate::models::inscription::{Inscription, NewInscriptions};
+use crate::{
+    models::inscription::{Inscription, NewInscriptions},
+    utils::environment::{env_or_default, env_or_panic},
+};
 use lazy_static::lazy_static;
-use std::env;
 use tracing::error;
 
 use super::last_update::set_last_update_to_now;
-
-fn ensure_is_not_empty(value: String) -> String {
-    if value.is_empty() {
-        panic!("Value must not be empty");
-    }
-
-    value
-}
-
-fn env_or_default(key: &str, default: &str) -> String {
-    ensure_is_not_empty(env::var(key).unwrap_or(default.to_string()))
-}
-
-fn env_or_panic(key: &str) -> String {
-    ensure_is_not_empty(env::var(key).expect(&format!("{} must be set", key)))
-}
 
 lazy_static! {
     static ref API_BASE_URL: String =
@@ -88,6 +74,7 @@ pub async fn publish_inscriptions(
 mod tests {
     use super::*;
     use mockito;
+    use std::env;
 
     static LAST_UPDATE_FILE: &'static str = "./last_update.timestamp.test";
 

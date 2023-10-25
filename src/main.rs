@@ -10,7 +10,10 @@ use crate::{
         domain_length::DomainLength,
         inscription::{Inscription, InscriptionMetaAttribute},
     },
-    utils::{last_update::set_last_update_to_now, request::publish_inscriptions},
+    utils::{
+        discord_webhook::new_domains_registered, last_update::set_last_update_to_now,
+        request::publish_inscriptions,
+    },
 };
 
 pub mod db;
@@ -52,6 +55,7 @@ async fn main() {
         info!("Publishing {} new domains", domains.len());
         debug!("Converting domains to Inscriptions objects...");
         let inscriptions: Vec<Inscription> = domains
+            .clone()
             .into_iter()
             .map(|(domain, reveal_tx)| {
                 let id = format!("{}i0", reveal_tx);
@@ -70,8 +74,6 @@ async fn main() {
             Ok(Ok(_)) => {
                 set_last_update_to_now();
                 info!("Successfully published inscriptions");
-                debug!("Sleeping for 60 seconds...");
-                sleep(60).await;
             }
             Ok(Err(e)) => {
                 error!("Error publishing inscriptions: {:?}", e);
@@ -86,5 +88,15 @@ async fn main() {
                 continue;
             }
         }
+
+        info!("Sending Discord webhook...");
+        let domains = domains
+            .into_iter()
+            .map(|(domain, reveal_tx)| (domain, format!("{}i0", reveal_tx)))
+            .collect::<Vec<_>>();
+
+        let _ = new_domains_registered(domains).await;
+        debug!("Sleeping for 60 seconds...");
+        sleep(60).await;
     }
 }
