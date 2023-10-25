@@ -59,7 +59,7 @@ lazy_static! {
 /// ```
 pub async fn publish_inscriptions(
     inscriptions: Vec<Inscription>,
-) -> reqwest::Result<Result<(), ()>> {
+) -> reqwest::Result<Result<(), String>> {
     let new_inscriptions = NewInscriptions::new(
         inscriptions,
         CREATOR_ADDRESS.to_string(),
@@ -74,7 +74,10 @@ pub async fn publish_inscriptions(
 
     if !response.status().is_success() {
         error!("Error publishing inscriptions: {:?}", response);
-        return Ok(Err(()));
+        let status = response.status();
+        let error = response.text().await?;
+        let error = format!("{}: {}", status, error);
+        return Ok(Err(error));
     }
 
     set_last_update_to_now();

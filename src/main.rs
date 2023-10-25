@@ -80,7 +80,7 @@ async fn main() {
                 continue;
             }
             Err(e) => {
-                error!("Error publishing inscriptions: {:?}", e);
+                error!("HTTP Error publishing inscriptions: {:?}", e);
                 debug!("Retrying in 5 seconds...");
                 sleep(5).await;
                 continue;
