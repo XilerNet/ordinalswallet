@@ -78,7 +78,7 @@ mod tests {
         ($domain:ident,$expected:pat) => {
             paste! {
                 #[test]
-                fn [<test_ $domain _domain_length_from_str>]() {
+                fn [<$domain _domain_length_from_str>]() {
                     let domain = format!("{}.o", stringify!($domain));
                     let domain_length = DomainLength::from(domain.as_str());
 
@@ -86,7 +86,7 @@ mod tests {
                 }
 
                 #[test]
-                fn [<test_ $domain _domain_length_from_string>]() {
+                fn [<$domain _domain_length_from_string>]() {
                     let domain = format!("{}.o", stringify!($domain));
                     let domain_length = DomainLength::from(domain);
 
@@ -101,13 +101,13 @@ mod tests {
             paste! {
                 #[test]
                 #[should_panic]
-                fn [<test_ $key _domain_length_from_str_panic>]() {
+                fn [<$key _domain_length_from_str_panic>]() {
                     let _ = DomainLength::from($domain);
                 }
 
                 #[test]
                 #[should_panic]
-                fn [<test_ $key _domain_length_from_string_panic>]() {
+                fn [<$key _domain_length_from_string_panic>]() {
                     let domain = $domain.to_string();
                     let _ = DomainLength::from(domain);
                 }
@@ -119,7 +119,7 @@ mod tests {
         ($domain_length:pat,$expected:ident) => {
             paste! {
                 #[test]
-                fn [<test_ $expected:snake _domain_length_to_string>]() {
+                fn [<$expected:snake _domain_length_to_string>]() {
                     let domain_length = $domain_length;
                     let domain_length_string = domain_length.to_string();
                     let expected = stringify!($expected).to_string();
@@ -128,7 +128,7 @@ mod tests {
                 }
 
                 #[test]
-                fn [<test_ $expected:snake _domain_length_serialize>]() {
+                fn [<$expected:snake _domain_length_serialize>]() {
                     let domain_length_string = serde_json::to_string(&$domain_length).unwrap();
                     let expected = format!("\"{}\"", stringify!($expected));
 
