@@ -23,6 +23,7 @@ pub struct NewInscriptions {
     pub new_inscriptions: Vec<Inscription>,
     creator_address: String,
     creator_signature: String,
+    slug: String,
 }
 
 impl Inscription {
@@ -50,11 +51,13 @@ impl NewInscriptions {
         new_inscriptions: Vec<Inscription>,
         creator_address: String,
         creator_signature: String,
+        slug: String,
     ) -> Self {
         Self {
             new_inscriptions,
             creator_address,
             creator_signature,
+            slug,
         }
     }
 }
@@ -158,11 +161,13 @@ mod tests {
             )],
             "creator_address".to_string(),
             "creator_signature".to_string(),
+            "xiler-dns".to_string(),
         );
 
         assert_eq!(new_inscriptions.new_inscriptions.len(), 1);
         assert_eq!(new_inscriptions.creator_address, "creator_address");
         assert_eq!(new_inscriptions.creator_signature, "creator_signature");
+        assert_eq!(new_inscriptions.slug, "xiler-dns");
     }
 
     #[test]
@@ -178,13 +183,14 @@ mod tests {
             )],
             "creator_address".to_string(),
             "creator_signature".to_string(),
+            "xiler-dns".to_string(),
         );
 
         let new_inscriptions_json = serde_json::to_string(&new_inscriptions).unwrap();
 
         assert_eq!(
             new_inscriptions_json,
-            r#"{"new_inscriptions":[{"id":"bd3bfa98c592fdb6ee81d4655082c43f27b63b05c706bd47bac4e1b715eab7a6i0","meta":{"name":"domain","attributes":[{"trait_type":"trait_type","value":"value"}]}}],"creator_address":"creator_address","creator_signature":"creator_signature"}"#
+            r#"{"new_inscriptions":[{"id":"bd3bfa98c592fdb6ee81d4655082c43f27b63b05c706bd47bac4e1b715eab7a6i0","meta":{"name":"domain","attributes":[{"trait_type":"trait_type","value":"value"}]}}],"creator_address":"creator_address","creator_signature":"creator_signature","slug":"xiler-dns"}"#
         );
     }
 }
