@@ -1,8 +1,7 @@
 #![feature(exclusive_range_pattern)]
 
 pub mod db;
-pub mod domain_length;
-pub mod model;
+pub mod models;
 pub mod utils;
 
 #[tokio::main]
