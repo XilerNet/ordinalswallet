@@ -53,11 +53,13 @@ lazy_static! {
 ///     Inscription::new("test2".to_string(), "test2".to_string(), vec![]),
 /// ];
 ///
-/// let result = publish_inscriptions(inscriptions);
+/// let result = publish_inscriptions(inscriptions).await;
 ///
 /// assert!(result.is_ok());
 /// ```
-pub fn publish_inscriptions(inscriptions: Vec<Inscription>) -> reqwest::Result<Result<(), ()>> {
+pub async fn publish_inscriptions(
+    inscriptions: Vec<Inscription>,
+) -> reqwest::Result<Result<(), ()>> {
     let new_inscriptions = NewInscriptions::new(
         inscriptions,
         CREATOR_ADDRESS.to_string(),
@@ -65,10 +67,10 @@ pub fn publish_inscriptions(inscriptions: Vec<Inscription>) -> reqwest::Result<R
         SLUG.to_string(),
     );
 
-    let client = reqwest::blocking::Client::new();
+    let client = reqwest::Client::new();
     let url = format!("{}/collection/update", *API_BASE_URL);
 
-    let response = client.post(&url).json(&new_inscriptions).send()?;
+    let response = client.post(&url).json(&new_inscriptions).send().await?;
 
     if !response.status().is_success() {
         error!("Error publishing inscriptions: {:?}", response);
@@ -82,19 +84,20 @@ pub fn publish_inscriptions(inscriptions: Vec<Inscription>) -> reqwest::Result<R
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ctor::ctor;
     use mockito;
 
-    #[cfg(test)]
-    #[ctor]
+    static LAST_UPDATE_FILE: &'static str = "./last_update.timestamp.test";
+
+    #[ctor::ctor]
     fn setup_env() {
         env::set_var("CREATOR_ADDRESS", "test");
         env::set_var("CREATOR_SIGNATURE", "test");
         env::set_var("SLUG", "test");
+        env::set_var("LAST_UPDATE_FILE", LAST_UPDATE_FILE);
     }
 
-    #[test]
-    fn test_publish_inscriptions_success() {
+    #[tokio::test]
+    async fn test_publish_inscriptions_success() {
         let mut server = mockito::Server::new();
 
         let inscriptions = vec![
@@ -120,11 +123,13 @@ mod tests {
 
         env::set_var("API_BASE_URL", server.url());
 
-        let result = publish_inscriptions(inscriptions);
+        let result = publish_inscriptions(inscriptions).await;
 
         assert!(result.is_ok());
         assert!(result.unwrap().is_ok());
 
         mock.assert();
+
+        std::fs::remove_file(LAST_UPDATE_FILE).unwrap();
     }
 }

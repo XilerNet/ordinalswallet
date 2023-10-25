@@ -13,11 +13,11 @@ dotenv = "0.15.0"
 lazy_static = "1.4.0"
 mockito = "1.2.0"
 paste = "1.0.14"
-reqwest = { version = "0.11.22", features = ["json", "blocking"] }
+reqwest = { version = "0.11.22", features = ["json"] }
 serde = { version = "1.0.189", features = ["derive"] }
 serde_json = "1.0.107"
 serial_test = "2.0.0"
-sqlx = { version = "0.7.2", features = ["postgres", "runtime-tokio-rustls", "time"] }
+sqlx = { version = "0.7.2", features = ["postgres", "time", "runtime-tokio-rustls", "chrono"] }
 tokio = { version = "1.33.0", features = ["full"] }
 tracing = "0.1.40"
 tracing-subscriber = "0.3.17"

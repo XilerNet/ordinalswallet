@@ -52,6 +52,12 @@ mod tests {
     use super::*;
     use chrono::offset::TimeZone;
     use serial_test::serial;
+    use std::env;
+
+    #[ctor::ctor]
+    fn setup_env() {
+        env::set_var("LAST_UPDATE_FILE", "./last_update.timestamp.test");
+    }
 
     #[test]
     #[serial]
