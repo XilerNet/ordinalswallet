@@ -5,12 +5,20 @@ use tracing::error;
 
 use super::last_update::set_last_update_to_now;
 
+fn ensure_is_not_empty(value: String) -> String {
+    if value.is_empty() {
+        panic!("Value must not be empty");
+    }
+
+    value
+}
+
 fn env_or_default(key: &str, default: &str) -> String {
-    env::var(key).unwrap_or(default.to_string())
+    ensure_is_not_empty(env::var(key).unwrap_or(default.to_string()))
 }
 
 fn env_or_panic(key: &str) -> String {
-    env::var(key).expect(&format!("{} must be set", key))
+    ensure_is_not_empty(env::var(key).expect(&format!("{} must be set", key)))
 }
 
 lazy_static! {
@@ -21,6 +29,34 @@ lazy_static! {
     static ref SLUG: String = env_or_default("SLUG", "xiler-dns");
 }
 
+/// Publishes new inscriptions to the API
+///
+/// # Environment variables
+///
+/// * `API_BASE_URL` - The base URL of the API
+/// * `CREATOR_ADDRESS` - The address of the creator
+/// * `CREATOR_SIGNATURE` - The signature of the creator
+/// * `SLUG` - The slug of the collection
+///
+/// # Arguments
+///
+/// * `inscriptions` - A vector of new inscriptions to publish
+///
+/// # Example
+///
+/// ```
+/// use xiler::utils::request::publish_inscriptions;
+/// use xiler::models::inscription::Inscription;
+///
+/// let inscriptions = vec![
+///     Inscription::new("test".to_string(), "test".to_string(), vec![]),
+///     Inscription::new("test2".to_string(), "test2".to_string(), vec![]),
+/// ];
+///
+/// let result = publish_inscriptions(inscriptions);
+///
+/// assert!(result.is_ok());
+/// ```
 pub fn publish_inscriptions(inscriptions: Vec<Inscription>) -> reqwest::Result<Result<(), ()>> {
     let new_inscriptions = NewInscriptions::new(
         inscriptions,
