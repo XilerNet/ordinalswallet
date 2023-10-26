@@ -13,7 +13,7 @@ async fn new_domain_registered(domains: &[(String, String)]) -> reqwest::Result<
     let client = reqwest::Client::new();
 
     let embeds = domains
-        .into_iter()
+        .iter()
         .map(|(domain, inscription_id)| {
             json!({
                 "description": format!(
@@ -53,7 +53,7 @@ pub async fn new_domains_registered(domains: Vec<(String, String)>) -> reqwest::
     }
 
     if !domains_to_retry.is_empty() {
-        return Ok(new_domains_registered(domains_to_retry).await?);
+        return new_domains_registered(domains_to_retry).await;
     }
 
     Ok(())

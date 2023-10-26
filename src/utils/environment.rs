@@ -13,5 +13,5 @@ pub fn env_or_default(key: &str, default: &str) -> String {
 }
 
 pub fn env_or_panic(key: &str) -> String {
-    ensure_is_not_empty(env::var(key).expect(&format!("{} must be set", key)))
+    ensure_is_not_empty(env::var(key).unwrap_or_else(|_| panic!("{} must be set", key)))
 }
