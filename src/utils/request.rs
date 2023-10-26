@@ -76,7 +76,7 @@ mod tests {
     use mockito;
     use std::env;
 
-    static LAST_UPDATE_FILE: &'static str = "./last_update.timestamp.test";
+    static LAST_UPDATE_FILE: &str = "./last_update.timestamp.test";
 
     #[ctor::ctor]
     fn setup_env() {

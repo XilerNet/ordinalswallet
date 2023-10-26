@@ -66,7 +66,7 @@ impl NewInscriptions {
 mod tests {
     use super::*;
 
-    const INSCRIPITON_ID: &'static str =
+    const INSCRIPITON_ID: &str =
         "bd3bfa98c592fdb6ee81d4655082c43f27b63b05c706bd47bac4e1b715eab7a6i0";
 
     #[test]
