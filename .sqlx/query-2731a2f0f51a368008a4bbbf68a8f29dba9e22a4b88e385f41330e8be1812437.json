@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT private_keys.domain, payment_inscriptions.reveal_tx FROM private_keys \n               INNER JOIN payment_inscription_contents ON payment_inscription_contents.id = private_keys.payment_inscription_content_id \n               INNER JOIN payment_inscriptions ON payment_inscriptions.content = payment_inscription_contents.id \n               INNER JOIN payments ON payments.id = payment_inscription_contents.payment_id \n               WHERE payments.updated_at > $1;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "domain",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "reveal_tx",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Timestamp"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "2731a2f0f51a368008a4bbbf68a8f29dba9e22a4b88e385f41330e8be1812437"
+}
